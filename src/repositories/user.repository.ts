@@ -1,31 +1,52 @@
 // repositories/user.repository.ts
 import { prisma } from "@/lib/prisma";
 
-export const createUser = (data: { email: string; password: string }) => {
-  return prisma.user.create({ data });
+export interface UserData {
+  email: string;
+  password: string;
+  isVerified: boolean;
 };
 
-export const findUserByEmail = (email: string) => {
-  return prisma.user.findUnique({ where: { email } });
-};
+console.log("PRISMA:", prisma);
+console.log("USER MODEL:", prisma?.user);
 
-export const findUserById = (id: string) => {
-  return prisma.user.findUnique({ where: { id } });
-};
+export class UserRepository {
+  
 
-export const getAllUsers = () => {
-  return prisma.user.findMany();
-};
+  async createUser(data: UserData)  {
+    return prisma.user.create({ data });
+  }
 
-export const updateUser = (id: string, data: any) => {
-  return prisma.user.update({
-    where: { id },
-    data
-  });
-};
+  async findUserByEmail(email: string) {
+    return await prisma.user.findUnique({
+      where: { email }
+    });
+  }
 
-export const deleteUser = (id: string) => {
-  return prisma.user.delete({
-    where: { id }
-  });
-};
+  async findUserById(id: string) {
+    return  prisma.user.findUnique({
+      where: { id }
+    });
+  }
+
+  async getAllUsers() {
+    return prisma.user.findMany();
+  }
+
+  async updateUser(
+    id: string,
+    data: Partial<UserData >  
+  ){
+    return prisma.user.update({
+      where: { id },
+      data
+    });
+  }
+
+  async deleteUser(id: string) {
+    return prisma.user.delete({
+      where: { id }
+    });
+  }
+
+}
